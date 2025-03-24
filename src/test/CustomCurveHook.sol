@@ -28,9 +28,10 @@ contract CustomCurveHook is BaseTestHooks {
         require(msg.sender == address(manager));
         _;
     }
-
+    // beforeSwap 函数在交易池发生交换前执行，处理交换的前置操作。其主要职责是从池中提取输入货币，并在结算时处理输出货币。
+    // 通过钩子机制，它提供了在交换操作前自定义行为的能力。钩子返回的 BeforeSwapDelta 用于记录交换前的资金变化，确保在交换过程中能够正确反映资金的流动
     function beforeSwap(
-        address, /* sender **/
+        address /* sender **/,
         PoolKey calldata key,
         IPoolManager.SwapParams calldata params,
         bytes calldata /* hookData **/
@@ -48,21 +49,20 @@ contract CustomCurveHook is BaseTestHooks {
     }
 
     function afterAddLiquidity(
-        address, /* sender **/
-        PoolKey calldata, /* key **/
-        IPoolManager.ModifyLiquidityParams calldata, /* params **/
-        BalanceDelta, /* delta **/
-        BalanceDelta, /* feeDelta **/
+        address /* sender **/,
+        PoolKey calldata /* key **/,
+        IPoolManager.ModifyLiquidityParams calldata /* params **/,
+        BalanceDelta /* delta **/,
+        BalanceDelta /* feeDelta **/,
         bytes calldata /* hookData **/
     ) external view override onlyPoolManager returns (bytes4, BalanceDelta) {
         revert AddLiquidityDirectToHook();
     }
 
-    function _getInputOutputAndAmount(PoolKey calldata key, IPoolManager.SwapParams calldata params)
-        internal
-        pure
-        returns (Currency input, Currency output, uint256 amount)
-    {
+    function _getInputOutputAndAmount(
+        PoolKey calldata key,
+        IPoolManager.SwapParams calldata params
+    ) internal pure returns (Currency input, Currency output, uint256 amount) {
         (input, output) = params.zeroForOne ? (key.currency0, key.currency1) : (key.currency1, key.currency0);
 
         amount = params.amountSpecified < 0 ? uint256(-params.amountSpecified) : uint256(params.amountSpecified);
