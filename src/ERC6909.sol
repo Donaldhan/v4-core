@@ -7,6 +7,8 @@ import {IERC6909Claims} from "./interfaces/external/IERC6909Claims.sol";
 /// @author Solmate (https://github.com/transmissions11/solmate/blob/main/src/tokens/ERC6909.sol)
 /// @dev Copied from the commit at 4b47a19038b798b4a33d9749d25e570443520647
 /// @dev This contract has been modified from the implementation at the above link.
+// 这个合约是对 ERC6909 标准的实现，提供了代币的转账、授权、操作员管理、铸币与销毁的功能。它允许账户间的代币转移，允许指定操作员执行转账，
+// 并且支持 ERC165 和 ERC6909 接口的检测。这个实现旨在通过简化逻辑和高效的存储结构，确保操作的低 gas 成本。
 abstract contract ERC6909 is IERC6909Claims {
     /*//////////////////////////////////////////////////////////////
                              ERC6909 STORAGE
